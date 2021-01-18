@@ -7,66 +7,97 @@ from keras.layers.core import Flatten, Dense, Activation, Dropout
 from keras.layers.convolutional import Conv2D
 from keras.layers.pooling import MaxPooling2D
 from sklearn.utils import shuffle
+from sklearn.model_selection import train_test_split
 import os
-lines=[]
-i=0
-data_path="./../../opt/carnd_p3/data/"
+from math import ceil
+
+lines = []
+# data_path="./../../opt/carnd_p3/data/"
+data_path = ""
+
+
+def generator(filepaths, batch_size):
+    n_samples = len(filepaths)
+    while True:
+        shuffle(filepaths)
+        start = 0
+        for i in range(0, n_samples, batch_size):
+            batch = filepaths[start:start + batch_size]
+            images = []
+            steer_angles = []
+            for sample in batch:
+                path = data_path + 'IMG/' + sample[0].split('\\')[-1]
+                # print(path)
+                image = cv2.imread(path)
+                image = preprocess_images(image)
+                images.append(image)
+                steer_angles.append(np.float(sample[3]))
+
+            images = np.array(images)
+            steer_angles = np.array(steer_angles)
+
+            yield shuffle(images, steer_angles)
+
+
+def image_loader(path):
+    images = []
+    steering_angle = []
+    for line in path:
+        image = cv2.imread('IMG/' + line[0].split('\\')[-1])
+        image = preprocess_images(image)
+        images.append(image)
+        steering_angle.append(line[3])
+    images = np.array(images)
+    steering_angle = np.array(steering_angle)
+    shuffle(images, steering_angle)
+    return (images, steering_angle)
+
+
+def preprocess_images(image):
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = image[60:140, :, :]
+    image = image / 255.0 - 0.5
+    return image
+
 
 with open(data_path + 'driving_log.csv') as f:
-    reader=csv.reader(f)
-    next(reader,None)
+    reader = csv.reader(f)
+    next(reader, None)
     for line in reader:
         lines.append(line)
 
-images=[]
-steering=[]
-total_images=len(lines)
+# train_lines,valid_lines=train_test_split(lines,test_size=0.2)
+# train_images,train_angles=image_loader(train_lines)
+images, angles = image_loader(lines)
+BATCH_SIZE = 32
 
-for i in range(total_images):
-    print(i)
-    path_center= data_path + 'IMG/' + lines[i][0].split('/')[-1]
-    image_center=cv2.imread(path_center)
-    image_center=cv2.cvtColor(image_center,cv2.COLOR_BGR2RGB)
-    image_center=image_center/255.0 - 0.5
-    images.append(image_center)
-    steer_val= np.float(lines[i][3])
-    steering.append(steer_val)
+# train_lines, validation_lines= train_test_split(lines, test_size = 0.2)
+# train_generator = generator(train_lines, BATCH_SIZE)
+# validation_generator = generator(validation_lines, BATCH_SIZE)
 
-    path_left = data_path + 'IMG/' + lines[i][1].split('/')[-1]
-    image_left = cv2.imread(path_left)
-    image_left = cv2.cvtColor(image_left, cv2.COLOR_BGR2RGB)
-    image_left=image_left/255.0 - 0.5
-    images.append(image_left)
-    steer_val = np.float(lines[i][3]) + 0.3
-    steering.append(steer_val)
+model = keras.Sequential()
+model.add(Conv2D(24, 5, padding='valid', input_shape=(80, 320, 3)))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=2, padding='valid'))
 
-    path_right = data_path + 'IMG/' + lines[i][2].split('/')[-1]
-    image_right = cv2.imread(path_right)
-    image_right = cv2.cvtColor(image_right, cv2.COLOR_BGR2RGB)
-    image_right=image_right/255.0 - 0.5
-    images.append(image_right)
-    steer_val = np.float(lines[i][3]) - 0.3
-    steering.append(steer_val)
+model.add(Conv2D(36, 5, padding='valid'))
+model.add(Conv2D(48, 5, padding='valid'))
+# model.add(Conv2D(64,3,padding='valid'))
+# model.add(Conv2D(64,3,padding='valid'))
 
-images=np.array(images)
-print("Shape of images input is:",images.shape)
-steering=np.array(steering)
-print("Shape of steering input is:", steering.shape)
-
-#images=images/255.0 - 0.5
-
-images,steering=shuffle(images,steering)
-print("Model is being made ...")
-model=keras.Sequential()
-model.add(Conv2D(20,3,padding='valid',input_shape=(160,320,3)))
-model.add(MaxPooling2D(pool_size=(2,2),strides=2,padding='valid'))
-model.add(Conv2D(40,3,padding='valid'))
 model.add(Flatten())
-model.add(Dense(10))
+# model.add(Dense(100))
+model.add(Dense(100))
+model.add(Dropout(0.5))
+model.add(Dense(50))
 model.add(Dense(1))
 print("Model completed")
-#print(model.summary())
+# print(model.summary())
 
-model.compile(loss='mse',optimizer='adam')
-model.fit(images,steering,validation_split=0.2,epochs=5)
+model.compile(loss='mse', optimizer='adam')
+# model.fit_generator(train_generator, \
+#             steps_per_epoch=ceil(len(train_lines)/BATCH_SIZE), \
+#             validation_data=validation_generator, \
+#             validation_steps=ceil(len(validation_lines)/BATCH_SIZE), \
+#             epochs=5, verbose=1)
+model.fit(images, angles, validation_split=0.2, epochs=5)
 model.save('model_sample_data.h5')
