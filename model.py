@@ -26,12 +26,12 @@ def generator(filepaths, batch_size):
             images = []
             steer_angles = []
             for sample in batch:
-                path = data_path + 'IMG/' + sample[0].split('/')[-1]
+                path = data_path + 'IMG/' + sample[0]
                 # print(path)
                 image = cv2.imread(path)
                 image = preprocess_images(image)
                 images.append(image)
-                steer_angles.append(np.float(sample[3]))
+                steer_angles.append(np.float(sample[1]))
 
             images = np.array(images)
             steer_angles = np.array(steer_angles)
@@ -66,9 +66,14 @@ with open(data_path + 'driving_log.csv') as f:
     for line in reader:
         lines.append(line)
 
-train_lines, validation_lines = train_test_split(lines, test_size=0.2)
-# train_images,train_angles=image_loader(train_lines)
-# images,angles=image_loader(lines)
+all_data = []
+steering_correction = 0.3
+for i in range(len(lines)):
+    all_data.append([lines[i][0].split('/')[-1], np.float(lines[i][3])])
+    all_data.append([lines[i][1].split('/')[-1], np.float(lines[i][3]) + steering_correction])
+    all_data.append([lines[i][2].split('/')[-1], np.float(lines[i][3]) - steering_correction])
+train_lines, validation_lines = train_test_split(all_data, test_size=0.2)
+
 BATCH_SIZE = 32
 
 train_generator = generator(train_lines, BATCH_SIZE)
@@ -101,4 +106,4 @@ model.fit_generator(train_generator, \
                     validation_steps=ceil(len(validation_lines) / BATCH_SIZE), \
                     epochs=5, verbose=1)
 # model.fit(images,angles,validation_split=0.2, epochs=5)
-model.save('model_sample_data.h5')
+model.save('model.h5')
