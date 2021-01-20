@@ -100,11 +100,11 @@ The model was tuned and the final parameters were:
 ### Preprocessing
 The images captured were first converted from BGR to RGB since cv2 library reads them in BGR format and drive.py uses PIL library which loads them in RGB.
 The training images were cropped to remove 60 pixels from the top which included the sky, trees and mountains, and 20 pixels from the bottom which showed the car's bonnet/hood. Here is an original and cropped image.
-
+<p align="center">
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/uncropped.PNG" alt="Uncropped" style="width:49%">
 
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/cropped.PNG" alt="Cropped" style="width:49%">
-
+</p>
 The images were then normalized to improve the speed of convergence.
 
 ### Training process and Testing
