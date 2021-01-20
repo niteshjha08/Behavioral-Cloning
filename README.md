@@ -39,7 +39,10 @@ In addition to ideal center lane driving, the model should also be able to recov
   </div>
 </div>
 
-<style type="text/css" rel="stylesheet">
+<style>
+*{
+  box-sizing: border-box;
+}
 .column3 {
   float: left;
   width: 33.33%;
