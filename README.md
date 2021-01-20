@@ -30,29 +30,28 @@ To capture ideal driving behavior, center lane driving was done for two laps. Th
 
 In addition to ideal center lane driving, the model should also be able to recover in case it deviates from the lane center, and continue on the road instead of slowly drifting off. For this, images are also recorded for the recovery from left and right sides of the lane towards center. The images of recovery are shown below:
 
+<p align="center">
+<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/left_recovery.PNG" alt="Left_recovery" width="500">
 
-<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/left_recovery.PNG" alt="Left_recovery" style="width:49%">
-
-
-<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/right_recovery.PNG" alt="Right_recovery" style="width:49%">
-
+<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/right_recovery.PNG" alt="Right_recovery" width="500">
+</p>
 
 This is done for both tracks to collect more data points. To generalise the model, collected images are augmented by flipping them horizontally and reversing the sign of steering angle( +ve --> -ve, -ve --> +ve).
-
-<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/center.PNG" alt="Straight" style="width:49%">
+<p align="center">
+<img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/unflipped.PNG" alt="Straight" style="width:49%">
 
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/flipped1.PNG" alt="Flipped" style="width:49%">
-
+</p>
 
 We are capturing images from the left and right cameras as well. These images can be used to augment our data points and capture the scene with an off-center shift. These additional images will also help the model develop ability to recover towards the center of the road. The following are images showing images at a particular instance from three diffent cameras.
 
-
+<p align="center">
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/left.PNG" alt="Left" style="width:33%">
 
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/center.PNG" alt="Center" style="width:33%">
 
 <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/right.PNG" alt="Right" style="width:33%">
-
+</p>
 However, the trained model will take the center camera's image as the input and produce the output steering angle.  Thus, we require 3D scene transformation information to calculate the optimal correction factor for steering commands for these off-center images. For a car driving straight in the center of the road, the left camera will see the scene as though it was closer to the left edge and correspond this image to a steering angle of zero! At the same time, the right image will see the car closer to the right and associate it to 0 steering angle as well. This will cause abrupt behavior in the model. This problem is illustrated below for a left turn.
 <p align="center">
   <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/multi_camera_problem.PNG" height="280"/>
