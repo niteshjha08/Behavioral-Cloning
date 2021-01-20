@@ -31,22 +31,38 @@ To capture ideal driving behavior, center lane driving was done for two laps. Th
 In addition to ideal center lane driving, the model should also be able to recover in case it deviates from the lane center, and continue on the road instead of slowly drifting off. For this, images are also recorded for the recovery from left and right sides of the lane towards center. The images of recovery are shown below:
 
 <div class="row">
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/left_recovery.PNG" alt="Left_recovery" style="width:100%">
   </div>
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/right_recovery.PNG" alt="Right_recovery" style="width:100%">
   </div>
 </div>
 
+<style type="text/css" rel="stylesheet">
+column3 {
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+column2 {
+  float: left;
+  width: 50%;
+  padding: 5px;
+}
+row::after {
+  content: "";
+  clear: both;
+  display: table;
+</style>
 
 This is done for both tracks to collect more data points. To generalise the model, collected images are augmented by flipping them horizontally and reversing the sign of steering angle( +ve --> -ve, -ve --> +ve).
 
 <div class="row">
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/center.PNG" alt="Straight" style="width:100%">
   </div>
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/flipped.PNG" alt="Flipped" style="width:100%">
   </div>
 </div>
@@ -54,13 +70,13 @@ This is done for both tracks to collect more data points. To generalise the mode
 We are capturing images from the left and right cameras as well. These images can be used to augment our data points and capture the scene with an off-center shift. These additional images will also help the model develop ability to recover towards the center of the road. The following are images showing images at a particular instance from three diffent cameras.
 
 <div class="row">
-  <div class="column">
+  <div class="column3">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/left.PNG" alt="Left" style="width:100%">
   </div>
-  <div class="column">
+  <div class="column3">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/center.PNG" alt="Center" style="width:100%">
   </div>
-  <div class="column">
+  <div class="column3">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/right.PNG" alt="Right" style="width:100%">
   </div>
 </div>
@@ -115,10 +131,10 @@ The images captured were first converted from BGR to RGB since cv2 library reads
 The training images were cropped to remove 60 pixels from the top which included the sky, trees and mountains, and 20 pixels from the bottom which showed the car's bonnet/hood. Here is an original and cropped image.
 
 <div class="row">
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/uncropped.PNG" alt="Uncropped" style="width:100%">
   </div>
-  <div class="column">
+  <div class="column2">
     <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/cropped.PNG" alt="Cropped" style="width:100%">
   </div>
 </div>
@@ -136,6 +152,7 @@ Here is a short clip of the autonomous run.
   <img src="https://github.com/niteshjha08/Behavioral-Cloning/blob/main/images/onboard_cam.gif" />
 </p>
 For the full video, head over to this [YouTube video!](https://youtu.be/SrQNSat_4bE)
+
 ### Conclusion
 This is a simple example of using end-to-end learning to enable the car to steer itself by learning from driving behavior. It gives an idea of the range of tasks that can be accomplished by such a model, such as mimicking the driving smarts in this case.
  
