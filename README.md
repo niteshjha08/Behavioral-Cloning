@@ -40,12 +40,12 @@ In addition to ideal center lane driving, the model should also be able to recov
 </div>
 
 <style type="text/css" rel="stylesheet">
-column3 {
+.column3 {
   float: left;
   width: 33.33%;
   padding: 5px;
 }
-column2 {
+.column2 {
   float: left;
   width: 50%;
   padding: 5px;
